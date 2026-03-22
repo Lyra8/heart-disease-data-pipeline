@@ -42,6 +42,11 @@ def check_row(row):
             errors.append("Max HR out of bounds")
     except ValueError:
         errors.append("Max HR is not a number")
+    
+    hd = row.get('Heart Disease')
+    if hd is not None and hd != "":
+        if hd not in ["Presence", "Absence"]:
+            errors.append("Heart Disease must be Presence or Absence")
 
     is_valid = len(errors) == 0  # The row passed inspection
     return is_valid, " | ".join(errors)   #returns the pass or fail status,takes the list of errors and joins them together into a single text string
