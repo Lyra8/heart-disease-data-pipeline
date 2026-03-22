@@ -46,3 +46,31 @@ def check_row(row):
     is_valid = len(errors) == 0  # The row passed inspection
     return is_valid, " | ".join(errors)   #returns the pass or fail status,takes the list of errors and joins them together into a single text string
 
+
+def clean_dataset(raw_data):
+    # store the records that pass all rules
+    clean_records = []
+    
+    # store the records that fail the rules
+    rejected_records = []
+
+    # Loop through every patient record in the raw data
+    for row in raw_data:
+        
+        # Send the row to our inspector function and get the results
+        is_valid, error_message = check_row(row)
+        
+        # If the row passed all checks, Add the valid row to our clean list
+        if is_valid:
+            if 'Heart Disease' not in row:
+                row['Heart Disease'] = 'Unknown'
+            clean_records.append(row)  
+
+        # If the row failed any check, Add the invalid row to our rejected list
+        else:
+            # Create a brand new column in this bad row and save the exact error message
+            row['Rejection_Reason'] = error_message
+            rejected_records.append(row)
+
+    # Hand both completed lists back to the main program
+    return clean_records, rejected_records
