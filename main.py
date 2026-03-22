@@ -1,8 +1,9 @@
-from src.ingest import read_csv, write_csv
+import argparse
+from src.ingest import read_csv, write_csv, remove_duplicates
 from src.validate import check_row
 from src.report import generate_report
 
-RAW = "data/raw_data1.csv"
+RAW = "data/raw_data2.csv"
 CLEAN = "data/clean_data.csv"
 REJECTED = "data/rejected_data.csv"
 
@@ -13,6 +14,9 @@ def run_clean():
     if len(data) == 0:
         print("Cleaning stopped: no data was loaded.")
         return
+
+    # Remove duplicate rows before validating
+    data = remove_duplicates(data)
 
     clean = []
     rejected = []
@@ -39,19 +43,38 @@ def run_analyze():
 
     if len(data) == 0:
         print("Analysis stopped: no clean data found.")
+        print("Run 'python main.py clean' first.")
         return
 
     generate_report(data)
 
 
 def main():
+    parser = argparse.ArgumentParser(description="Heart Disease Data Pipeline")
+
+    parser.add_argument(
+        "command",
+        choices=["clean", "analyze", "all"],
+        help="'clean' to validate data | 'analyze' to generate report | 'all' to do both"
+    )
+
+    args = parser.parse_args()
+
     print("=== Heart Disease Data Pipeline ===\n")
 
-    print("--- Step 1: Cleaning Data ---")
-    run_clean()
+    if args.command == "clean":
+        print("--- Cleaning Data ---")
+        run_clean()
 
-    print("\n--- Step 2: Analyzing Data ---")
-    run_analyze()
+    elif args.command == "analyze":
+        print("--- Analyzing Data ---")
+        run_analyze()
+
+    elif args.command == "all":
+        print("--- Step 1: Cleaning Data ---")
+        run_clean()
+        print("\n--- Step 2: Analyzing Data ---")
+        run_analyze()
 
     print("\n=== Done ===")
 
