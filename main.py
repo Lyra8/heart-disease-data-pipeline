@@ -1,8 +1,8 @@
 from src.ingest import read_csv, write_csv
-from src.validate import validate_row
+from src.validate import check_row
 from src.report import generate_report
 
-RAW = "data/raw_data.csv"
+RAW = "data/raw_data1.csv"
 CLEAN = "data/clean_data.csv"
 REJECTED = "data/rejected_data.csv"
 
@@ -18,7 +18,7 @@ def run_clean():
     rejected = []
 
     for row in data:
-        valid, error = validate_row(row)
+        valid, error = check_row(row)
 
         if valid:
             clean.append(row)
