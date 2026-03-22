@@ -1,6 +1,6 @@
 import argparse
-from src.ingest import read_csv, write_csv, remove_duplicates
-from src.validate import check_row
+from src.ingest import read_csv, write_csv
+from src.validate import clean_dataset
 from src.report import generate_report
 
 RAW = "data/raw_data2.csv"
@@ -15,20 +15,7 @@ def run_clean():
         print("Cleaning stopped: no data was loaded.")
         return
 
-    # Remove duplicate rows before validating
-    data = remove_duplicates(data)
-
-    clean = []
-    rejected = []
-
-    for row in data:
-        valid, error = check_row(row)
-
-        if valid:
-            clean.append(row)
-        else:
-            row["error"] = error
-            rejected.append(row)
+    clean, rejected = clean_dataset(data)
 
     write_csv(CLEAN, clean)
     write_csv(REJECTED, rejected)
