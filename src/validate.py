@@ -53,24 +53,44 @@ def clean_dataset(raw_data):
     
     # store the records that fail the rules
     rejected_records = []
+    seen_records = set()
 
-    # Loop through every patient record in the raw data
+    # Dictionaries to interpret encoded values
+    sex_map = {0: 'Female', 1: 'Male'}
+    cp_map = {1: 'Typical Angina', 2: 'Atypical Angina', 3: 'Non-anginal Pain', 4: 'Asymptomatic'}
+
+
     for row in raw_data:
-        
-        # Send the row to our inspector function and get the results
+        # Check for duplicate records first
+        row_string = str(row.items())
+        if row_string in seen_records:
+            row['Rejection_Reason'] = "Duplicate record"
+            rejected_records.append(row)
+            continue
+            
+        seen_records.add(row_string)
+
         is_valid, error_message = check_row(row)
         
         # If the row passed all checks, Add the valid row to our clean list
         if is_valid:
             if 'Heart Disease' not in row:
-                row['Heart Disease'] = 'Unknown'
-            clean_records.append(row)  
+                row['Heart Disease'] = 'Unknown' 
 
-        # If the row failed any check, Add the invalid row to our rejected list
+        # Translate the encoded values into readable text
+            sex_val = int(row.get('Sex', -1))
+            if sex_val in sex_map:
+                row['Sex'] = sex_map[sex_val]
+            
+            cp_val = int(row.get('Chest pain type', -1))
+            if cp_val in cp_map:
+                row['Chest pain type'] = cp_map[cp_val]
+                    
+            clean_records.append(row)
+
         else:
-            # Create a brand new column in this bad row and save the exact error message
+
             row['Rejection_Reason'] = error_message
             rejected_records.append(row)
 
-    # Hand both completed lists back to the main program
     return clean_records, rejected_records
