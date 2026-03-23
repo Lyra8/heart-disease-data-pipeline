@@ -1,42 +1,41 @@
 def generate_report(clean_data):
     if not clean_data:
-        print("Error: No clean data available to analyze.")
+        print("!!! No clean data available for analysis.")
         return
 
-    total_patients = len(clean_data)
+    count = len(clean_data)
     total_age = 0
-    max_hr_list = []
-    chest_pain_counts = {}
-    disease_count = 0 
+    hr_values = []
+    disease_count = 0
+    cp_distribution = {}
 
     for row in clean_data:
-        # 1. Summary Statistics
-        total_age += int(row['Age'])
-        max_hr_list.append(int(row['Max HR']))
+        # We use lowercase keys because clean_dataset normalized them
+        total_age += int(float(row.get('age', 0)))
         
-        # 2. Distributions
-        cp_type = row.get('Chest pain type', 'Unknown')
-        if cp_type in chest_pain_counts:
-            chest_pain_counts[cp_type] += 1
-        else:
-            chest_pain_counts[cp_type] = 1
-
-        # 3. Meaningful Patterns
-        if row.get('Heart Disease') == 'Presence':
+        hr = row.get('max hr')
+        if hr: hr_values.append(int(float(hr)))
+        
+        # Patterns
+        hd = str(row.get('heart disease', '')).strip().lower()
+        if hd == 'presence':
             disease_count += 1
+            
+        # Groupings
+        cp = row.get('chest pain type', 'Unknown')
+        cp_distribution[cp] = cp_distribution.get(cp, 0) + 1
 
-    # Final Math Calculations
-    average_age = total_age / total_patients
-    highest_hr = max(max_hr_list)
-    disease_percentage = (disease_count / total_patients) * 100 
-
-    # 4. Terminal Output (Task 4)
-    print("\n*** Data Analysis Report ***")
-    print(f"Total Valid Records: {total_patients}")
-    print(f"Average Patient Age: {average_age:.1f} years")
-    print(f"Highest Max Heart Rate: {highest_hr} bpm")
-    print(f"Heart Disease Presence: {disease_percentage:.1f}% of valid patients")
-    print("Chest Pain Type Distribution:")
-    for cp_type, count in chest_pain_counts.items():
-        print(f"  Type {cp_type}: {count} patients")
-    print("****************************\n")
+    print("\n" + "="*30)
+    print("      ANALYSIS REPORT")
+    print("="*30)
+    print(f"Total Validated Records: {count}")
+    print(f"Average Patient Age:    {total_age / count:.1f}")
+    
+    if hr_values:
+        print(f"Max Heart Rate Range:   {min(hr_values)} - {max(hr_values)} bpm")
+    
+    print(f"Heart Disease Rate:     {(disease_count / count) * 100:.1f}%")
+    print("\nChest Pain Distribution:")
+    for cp, val in cp_distribution.items():
+        print(f" - {cp}: {val}")
+    print("="*30 + "\n")
