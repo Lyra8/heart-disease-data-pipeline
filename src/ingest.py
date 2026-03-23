@@ -35,12 +35,12 @@ def remove_duplicates(data):
 
 
 def write_csv(filepath, data):
-    if len(data) == 0:
-        print(f"No data to write - skipping '{filepath}'")
-        return
-
     try:
         with open(filepath, mode="w", newline="") as file:
+            if len(data) == 0:
+                print(f"No rejected rows - '{filepath}' cleared")
+                return
+
             headers = data[0].keys()
             writer = csv.DictWriter(file, fieldnames=headers)
             writer.writeheader()
