@@ -134,7 +134,7 @@ def clean_dataset(raw_data):
 
     for row in raw_data:
         # 1. Normalize Headers (Lowercasing & Stripping)
-        norm_row = {k.strip().lower(): v for k, v in row.items()}
+        norm_row = {k.strip().lower(): v for k, v in row.items() if k is not None}
         
         # 2. Get ID for duplicate checking
         current_id = norm_row.get('id', '').strip()
