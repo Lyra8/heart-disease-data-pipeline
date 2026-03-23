@@ -19,9 +19,13 @@ def generate_report(clean_data):
         if hr: hr_values.append(int(float(hr)))
         
         # Patterns
-        hd = str(row.get('heart disease', '')).strip().lower()
-        if hd == 'presence':
-            disease_count += 1
+        # Inside the loop in report.py
+        hd_val = row.get('heart disease')
+        if hd_val is not None:
+            has_disease_data = True  # <--- ADD THIS LINE
+            hd = str(hd_val).strip().lower()
+            if hd == 'presence':
+                disease_count += 1
             
         # Groupings
         cp = row.get('chest pain type', 'Unknown')
