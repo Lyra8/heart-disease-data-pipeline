@@ -16,13 +16,12 @@ python main.py clean
 To only generate the analysis report:
 python main.py analyze
 
-Just keep in mind that you need to run clean at least once before analyze, otherwise there is no clean data file to read from.
+When you run clean or all, the program will automatically show you the available CSV files in the data folder and ask you to pick which one you want to process. Just keep in mind that you need to run clean at least once before analyze, otherwise there is no clean data file to read from.
+
 Project Structure
+The project is split into separate files, each with its own responsibility. The main.py file is the entry point and the only file you run directly — it handles the command line interface, the file selection menu, and controls the flow of the pipeline. The ingest.py file inside the src folder handles all file reading and writing, as well as duplicate removal. The validate.py file contains all the rules that decide whether a row of data is valid or not. The report.py file does the math and prints the final analysis. All the data files live inside the data folder — the raw input file goes in there, and the clean and rejected output files get generated there automatically when you run the pipeline.
 
-The project is split into separate files, each with its own responsibility. 
-The main.py file is the entry point and the only file you run directly — it handles the command line interface and controls the flow of the pipeline. The ingest.py file inside the src folder handles all file reading and writing, as well as duplicate removal. The validate.py file contains all the rules that decide whether a row of data is valid or not. The report.py file does the math and prints the final analysis. All the data files live inside the data folder — the raw input file goes in there, and the clean and rejected output files get generated there automatically when you run the pipeline.
 Who built what?
-
 This project was built by two people. 
 Edda was responsible for the system and data flow, which includes main.py and ingest.py — the command line interface, reading and writing files, and handling duplicates. 
 Lyra was responsible for the data logic, which includes validate.py and report.py — the validation rules for every column and the analysis report.
