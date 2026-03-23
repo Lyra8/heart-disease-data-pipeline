@@ -1,6 +1,5 @@
 import csv
 
-
 def read_csv(filepath):
     try:
         with open(filepath, mode="r", newline="") as file:
@@ -11,27 +10,6 @@ def read_csv(filepath):
         print(f"Error: File not found - '{filepath}'")
         print("Please check the file path and try again.")
         return []
-
-
-def remove_duplicates(data):
-    seen = set()
-    unique = []
-    duplicates = 0
-
-    for row in data:
-        # Use the id column to detect duplicates
-        row_id = row.get("id", "")
-
-        if row_id not in seen:
-            seen.add(row_id)
-            unique.append(row)
-        else:
-            duplicates += 1
-
-    if duplicates > 0:
-        print(f"Removed {duplicates} duplicate rows")
-
-    return unique
 
 
 def write_csv(filepath, data):

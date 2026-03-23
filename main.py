@@ -7,7 +7,6 @@ from src.report import generate_report
 CLEAN = "data/clean_data.csv"
 REJECTED = "data/rejected_data.csv"
 
-
 def pick_file():
     # Get all CSV files inside the data/ folder
     files = []
@@ -39,7 +38,6 @@ def pick_file():
     print(f"\nSelected: {files[index]}\n")
     return selected
 
-
 def run_clean(raw):
     data = read_csv(raw)
 
@@ -56,7 +54,6 @@ def run_clean(raw):
     print(f"Clean rows:    {len(clean)}")
     print(f"Rejected rows: {len(rejected)}")
 
-
 def run_analyze():
     data = read_csv(CLEAN)
 
@@ -66,7 +63,6 @@ def run_analyze():
         return
 
     generate_report(data)
-
 
 def main():
     parser = argparse.ArgumentParser(description="Heart Disease Data Pipeline")
@@ -100,6 +96,5 @@ def main():
             run_analyze()
 
     print("\n=== Done ===")
-
 
 main()
