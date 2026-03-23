@@ -10,11 +10,23 @@ def check_row(row):
         val = row.get(key.lower().strip())
         return str(val).strip() if val is not None else ""
 
-    # --- 1. ID & AGE ---
-    id_val = get_val('id')
-    if not id_val:
+    # --- 1. ID ---
+    raw_id = get_val('id')
+    
+    if not raw_id:
         errors.append("Missing Patient ID")
-
+    # This rejects IDs starting with / or # instead of cleaning them
+    elif raw_id.startswith('/') or raw_id.startswith('#'):
+        errors.append(f"ID '{raw_id}' contains invalid prefix characters")
+    else:
+        try:
+            # We use float first to handle "630106.0" then int
+            patient_id = int(float(raw_id))
+            if patient_id < 0:
+                errors.append(f"Invalid negative ID: {patient_id}")
+        except ValueError:
+            errors.append(f"ID '{raw_id}' is not a valid numeric format")
+     # ---  AGE ---
     try:
         age_str = get_val('age')
         if not age_str:
@@ -137,7 +149,7 @@ def clean_dataset(raw_data):
         norm_row = {k.strip().lower(): v for k, v in row.items() if k is not None}
         
         # 2. Get ID for duplicate checking
-        current_id = norm_row.get('id', '').strip()
+        current_id = str(norm_row.get('id', '') or '').strip()
 
         if current_id in seen_ids:
             norm_row['rejection_reason'] = f"Duplicate Patient ID: {current_id}"
